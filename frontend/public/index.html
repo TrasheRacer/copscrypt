@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <title>Express</title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+
+  <body>
+    <!-- <h1>Express</h1>
+  <p>Welcome to Express</p> -->
+
+    <div class="dataContent">
+      <button onclick="resetView(); return false">Show meridian</button>
+      <div class="mapContainer">
+        <canvas id="mapContent" width="800" height="800"></canvas>
+      </div>
+      <div>
+        <video id="camera" autoplay playsinline></video>
+        <canvas id="photo"></canvas>
+        <div id="buttons">
+          <button id="snap">Snap</button><span> then </span
+          ><button id="send">Send</button>
+          <span> or </span>
+          <button id="snapAndSend">Snap &amp; Send</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <!-- FIXME: Bad class name -->
+      <div class="incoming">
+        <h2>Outgoing photos:</h2>
+        <div id="trailUser"></div>
+      </div>
+      <div class="incoming">
+        <h2>Incoming photos from peer 1:</h2>
+        <div id="trailPeer"></div>
+      </div>
+      <div class="incoming">
+        <h2>Incoming photos from peer 2:</h2>
+      </div>
+      <div class="incoming">
+        <h2>...</h2>
+      </div>
+      <div class="incoming">
+        <h2>Incoming photos from peer N:</h2>
+        <p>TODO!</p>
+      </div>
+    </div>
+  </body>
+
+  <script>
+    // SHARED GLOBAL STATE
+    let incomingMessages = [];
+  </script>
+
+  <script src="//unpkg.com/d3@5/dist/d3.min.js"></script>
+  <script src="/javascripts/map.js"></script>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+  <script src="/javascripts/client.js"></script>
+</html>
