@@ -1,6 +1,5 @@
 "use strict";
 
-
 // TODO:
 //
 // 0) Extract (global, shared!) state module
@@ -17,59 +16,49 @@
 //    How to automate verification of correct behaviour to make
 //    slow, incremental development easier?
 //
-//    Could start by documeting (in index.html) features available 
+// Could start by documeting (in index.html) features available 
 //
-//    REFACTOR SINGLE METHOD THEN MANUALLY-RETEST!
+// REFACTOR SINGLE METHOD THEN MANUALLY-RETEST!
 //
-//    Make the room ID an input first for convenience
+// Make the room ID an input first for convenience
 //
-//    Consider diffing 'copscrypt' between here and laptop
-//    to make sure nothing is missing?
+// Consider diffing 'copscrypt' between here and laptop
+// to make sure nothing is missing?
 //
-//    Say that after refactoring we have modules for:
-//    - socket(/in, out)
-//    - data/(audiovideo, location, tm) - 'pre-socket'
-//    - data/tc - 'post-socket', really just anything from 'backend';
-//      is it too unrealistic to hope that 
-//    - data/peer - 'post-socket', text/photo from connected peers
+// Say that after refactoring we have modules for:
+// - socket(/in, out)
+// - data/(audiovideo, location, tm) - 'pre-socket'
+// - data/tc - 'post-socket', really just anything from 'backend';
+//   is it too unrealistic to hope that 
+// - data/peer - 'post-socket', text/photo from connected peers
 //
-//    Regarding the 'test/dev harness' if we do it functionally
-//    then we can at minimum:
-//    * assert that a particular method/property was called
-//    * assert that the method was called using given params
+// Regarding the 'test/dev harness' if we do it functionally
+// then we can at minimum:
+// * assert that a particular method/property was called
+// * assert that the method was called using given params
 //
-//    "WizardWebRTC"
+// "WizardWebRTC"
 //
-//    SPECIFICATION:
-//    - handle constant-bitrate streams: audio(video)
-//    - handle variable-bitrate streams: (HD) video
-//    - handle event data: 'commands', peer msgs, GPS pings, txt...
+// SPECIFICATION:
+// - handle constant-bitrate streams: audio(video)
+// - handle variable-bitrate streams: (HD) video
+// - handle event data: 'commands', peer msgs, GPS pings, txt...
 //
-//    Interface to output (canvas, video elements etc):
-//    aim for idiosyncratic as needed but predicatble
+// Interface to output (canvas, video elements etc):
+// aim for idiosyncratic as needed but predicatble
 //
-//    INCOMING
-//    * from peers: text, photo, location, notifications...
-//    * from server: text, ???, notifications...
+// INCOMING
+// * from peers: text, photo, location, notifications...
+// * from server: text, ???, notifications...
 //
-//    OUTGOING
-//    * audio/video
-//    * stills from camera(s)
-//    * chunks of audio, video
-//    * location (intermittent?)
+// OUTGOING
+// * audio/video
+// * stills from camera(s)
+// * chunks of audio, video
+// * location (intermittent?)
 //
-//    Does each correspond to a webRTC 'channel'?
+// Does each correspond to a webRTC 'channel'?
 //
-
-
-
-
-
-
-
-
-
-
 // TO REITERATE
 
 // A) Test current state
@@ -81,90 +70,16 @@
 // F) Otherwise, extract ONE (1) more critical function
 // G) Retest
 
-
 // Evaluate how you feel
-
 
 // Would it make sense to extract+document the (global) st8 first?
 
-
 // Would it make sense to define interfaces for the new functions 1st?
-
 
 // How is this (best) testable?
 
-
 // Could we alternatively make a little abstracted real/mock dep,
 // start testing from this point of view?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 /****************************************************************************
@@ -187,21 +102,25 @@ var photo = document.getElementById("photo");
 var photoContext = photo.getContext("2d");
 var trailIncoming = document.getElementById("trailPeer");
 var trailOutgoing = document.getElementById("trailUser");
-var snapBtn = document.getElementById("snap");
-var sendBtn = document.getElementById("send");
-var snapAndSendBtn = document.getElementById("snapAndSend");
+// var snapBtn = document.getElementById("snap");
+// var sendBtn = document.getElementById("send");
+// var snapAndSendBtn = document.getElementById("snapAndSend");
+var streamBtn = document.getElementById("stream-btn");
 
 var photoContextW;
 var photoContextH;
 
 // Attach event handlers
-snapBtn.addEventListener("click", snapPhoto);
-sendBtn.addEventListener("click", sendPhoto);
-snapAndSendBtn.addEventListener("click", snapAndSend);
+// snapBtn.addEventListener("click", snapPhoto);
+// sendBtn.addEventListener("click", sendPhoto);
+// snapAndSendBtn.addEventListener("click", snapAndSend);
+
+// TODO: Disable when the user is recieving a stream
+streamBtn.addEventListener("click", createStream);
 
 // Disable send buttons by default.
 // sendBtn.disabled = true; // FIXME!
-snapAndSendBtn.disabled = true;
+// snapAndSendBtn.disabled = true;
 
 // Create a random room if not already present in the URL.
 var isInitiator;
@@ -267,14 +186,14 @@ if (location.hostname.match(/localhost|127\.0\.0/)) {
 // Leaving rooms and disconnecting from peers.
 socket.on("disconnect", function (reason) {
   console.log(`Disconnected: ${reason}.`);
-  sendBtn.disabled = true;
-  snapAndSendBtn.disabled = true;
+  // sendBtn.disabled = true;
+  // snapAndSendBtn.disabled = true;
 });
 
 socket.on("bye", function (room) {
   console.log(`Peer leaving room:`, room);
-  sendBtn.disabled = true;
-  snapAndSendBtn.disabled = true;
+  // sendBtn.disabled = true;
+  // snapAndSendBtn.disabled = true;
   // If peer did not create the room, re-enter to be creator.
   if (!isInitiator) {
     window.location.reload();
@@ -337,7 +256,7 @@ function gotStream(stream) {
       photoContextH,
     );
   };
-  show(snapBtn);
+  // show(snapBtn);
 }
 
 /****************************************************************************
@@ -345,7 +264,10 @@ function gotStream(stream) {
  ****************************************************************************/
 
 var peerConn;
+
+// TODO: Make into video!
 var photoChannel;
+
 var gpsChannel;
 
 function signalingMessageCallback(message) {
@@ -447,14 +369,14 @@ function onLocalSessionCreated(desc) {
 function onPhotoDataChannelCreated() {
   photoChannel.onopen = function () {
     console.log("Photo data channel opened!");
-    sendBtn.disabled = false;
-    snapAndSendBtn.disabled = false;
+    // sendBtn.disabled = false;
+    // snapAndSendBtn.disabled = false;
   };
 
   photoChannel.onclose = function () {
     console.log("Photo data channel closed!");
-    sendBtn.disabled = true;
-    snapAndSendBtn.disabled = true;
+    // sendBtn.disabled = true;
+    // snapAndSendBtn.disabled = true;
   };
 
   photoChannel.onmessage = // FIXME: Adapt to update sharing location!
@@ -565,9 +487,15 @@ function receivePhotoDataFirefoxFactory() {
  * Aux functions, mostly UI-related
  ****************************************************************************/
 
+/** Open the video+audio+location stream from one user in the room to others */
+function createStream() {
+  // TODO: See createCall_ in appRTC!
+}
+
+// TODO: Remove
 function snapPhoto() {
   photoContext.drawImage(video, 0, 0, photo.width, photo.height);
-  show(photo, sendBtn);
+  // show(photo, sendBtn);
   navigator.geolocation.getCurrentPosition(
     function (l) {
       clientGPS = {
@@ -592,6 +520,7 @@ function snapPhoto() {
   );
 }
 
+// TODO: Remove
 function sendPhoto() {
   // Split data channel message in chunks of this byte length.
   var CHUNK_LEN = 64000;
