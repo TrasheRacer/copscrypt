@@ -1,3 +1,5 @@
+> Antivenom still makes sense, even if (say) 80% of snakes are harmless
+
 ## WIP
 
 Run `DEBUG=frontend:* pnpm start` and navigate to the IP of the host
