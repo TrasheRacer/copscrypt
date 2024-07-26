@@ -44,12 +44,10 @@ See the appRTC demo application https://github.com/webrtc/apprtc/ and samples ht
 
 ### Current state
 
-**FIXME: Update screenshots!**
+After running locally (the system is not yet deployed) you'll see something like this:
 
-#### Peer 1 (also the server)
+![work in progress](wip.png)
 
-![host1](host1.png)
-
-#### Peer 2
-
-![host2](host2.jpg)
+* Exchange geo-tagged still images over WebRTC with anybody in the same room
+* Rooms are identified by the URL suffix after the `#`
+* Check out the buttons linking to our landing page and also a short PDF presentation 
