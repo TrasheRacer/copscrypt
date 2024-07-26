@@ -97,8 +97,11 @@ var configuration = null;
 var clientGPS = {};
 
 // var roomURL = document.getElementById('url');
-var video = document.querySelector("video");
-var photo = document.getElementById("photo");
+var video = document.querySelector("video#camera");
+var incomingVideo = document.querySelector("video#incoming");
+
+var photo = document.getElementById("photo"); // TODO: Remove!
+
 var photoContext = photo.getContext("2d");
 var trailIncoming = document.getElementById("trailPeer");
 var trailOutgoing = document.getElementById("trailUser");
@@ -142,14 +145,14 @@ socket.on("ipaddr", function (ipaddr) {
 socket.on("created", function (room, clientId) {
   console.log("Created room", room, "- my client ID is", clientId);
   isInitiator = true;
-  grabWebCamVideo();
+  // grabWebCamVideo();
 });
 
 socket.on("joined", function (room, clientId) {
   console.log("This peer has joined room", room, "with client ID:", clientId);
   isInitiator = false;
   createPeerConnection(isInitiator, configuration, clientId);
-  grabWebCamVideo();
+  // grabWebCamVideo();
 });
 
 socket.on("full", function (room) {
@@ -263,6 +266,8 @@ function gotStream(stream) {
  * WebRTC peer connection and data channel
  ****************************************************************************/
 
+// Stream audio and video between users;
+// note that RTCDataChannel is for data
 var peerConn;
 
 // TODO: Make into video!
@@ -306,7 +311,7 @@ function createPeerConnection(isInitiator, config) {
   );
   peerConn = new RTCPeerConnection(config);
 
-  // send any ice candidates to the other peer
+  // Send any ICE candidates to the other peer
   peerConn.onicecandidate = function (event) {
     console.log("icecandidate event:", event);
     if (event.candidate) {
@@ -323,7 +328,7 @@ function createPeerConnection(isInitiator, config) {
 
   if (isInitiator) {
     console.log("Creating data channel(s)...");
-    photoChannel = peerConn.createDataChannel("photos");
+    photoChannel = peerConn.createDataChannel("photos"); // TODO: Remove!
     onPhotoDataChannelCreated();
 
     // Create extra channel for GPS data
@@ -341,6 +346,12 @@ function createPeerConnection(isInitiator, config) {
         sendMessage(peerConn.localDescription);
       })
       .catch(logError);
+
+    // Add tracks from stream to peer connection
+    window.stream.getTracks().forEach(track => {
+      peerConn.addTrack(track, window.stream)
+    });
+
   } else {
     peerConn.ondatachannel = function (event) {
       console.log("ondatachannel:", event.channel);
@@ -352,7 +363,20 @@ function createPeerConnection(isInitiator, config) {
         onLocationDataChannelCreated();
       }
     };
+
+    // Set the 'track' event callback
+    peerConn.ontrack = function (event) {
+      console.log("ontrack:", event.channel);
+      if (incomingVideo.srcObject !== event.streams[0]) {
+        incomingVideo.srcObject = event.streams[0]
+        console.log("recieved and set remote stream")
+      }
+    }
   }
+
+  // TODO:
+  //   If initiator then call getTracks() on localStream then add tracks to peerConn;
+  //   else set peerConn.ontrack callback to set video.srcObject
 }
 
 function onLocalSessionCreated(desc) {
@@ -489,12 +513,13 @@ function receivePhotoDataFirefoxFactory() {
 
 /** Open the video+audio+location stream from one user in the room to others */
 function createStream() {
-  // TODO: See createCall_ and also call.js in appRTC!
+  shareLocation();
+  grabWebCamVideo()
 }
 
-// TODO: Remove
-function snapPhoto() {
-  photoContext.drawImage(video, 0, 0, photo.width, photo.height);
+// snapPhoto
+function shareLocation() {
+  // photoContext.drawImage(video, 0, 0, photo.width, photo.height);
   // show(photo, sendBtn);
   navigator.geolocation.getCurrentPosition(
     function (l) {
@@ -569,7 +594,7 @@ function sendPhoto() {
 }
 
 function snapAndSend() {
-  snapPhoto();
+  shareLocation();
   sendPhoto();
 }
 
