@@ -489,7 +489,7 @@ function receivePhotoDataFirefoxFactory() {
 
 /** Open the video+audio+location stream from one user in the room to others */
 function createStream() {
-  // TODO: See createCall_ in appRTC!
+  // TODO: See createCall_ and also call.js in appRTC!
 }
 
 // TODO: Remove
