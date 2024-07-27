@@ -11,8 +11,8 @@ These lists are themselves WIP (ie: to be updated!) and serve as the roadmap and
 #### Primary
 
 ```
-[x] Send geo-tagged photo peer-to-peer with WebRTC
-[ ] Video (with location and, naturally, audio) streaming
+[x] Video streaming
+[ ] Location streaming (implemented but not enabled)
 [ ] Make responsive UI/UX
 [ ] Peers can download video (and join mid-stream) 
 [ ] Deployment - CI(/CD)?

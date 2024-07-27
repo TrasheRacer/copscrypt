@@ -92,11 +92,12 @@
 //   }]
 // };
 
-var configuration = null;
+var configuration = {};
 
 var clientGPS = {};
 
 // var roomURL = document.getElementById('url');
+
 var video = document.querySelector("video#camera");
 var incomingVideo = document.querySelector("video#incoming");
 
@@ -105,30 +106,23 @@ var photo = document.getElementById("photo"); // TODO: Remove!
 var photoContext = photo.getContext("2d");
 var trailIncoming = document.getElementById("trailPeer");
 var trailOutgoing = document.getElementById("trailUser");
-// var snapBtn = document.getElementById("snap");
-// var sendBtn = document.getElementById("send");
-// var snapAndSendBtn = document.getElementById("snapAndSend");
+
 var streamBtn = document.getElementById("stream-btn");
 
 var photoContextW;
 var photoContextH;
 
 // Attach event handlers
-// snapBtn.addEventListener("click", snapPhoto);
-// sendBtn.addEventListener("click", sendPhoto);
-// snapAndSendBtn.addEventListener("click", snapAndSend);
-
-// TODO: Disable when the user is recieving a stream
-streamBtn.addEventListener("click", createStream);
-
-// Disable send buttons by default.
-// sendBtn.disabled = true; // FIXME!
-// snapAndSendBtn.disabled = true;
+streamBtn.addEventListener("click", createStream); // TODO: Disable while recieving!
 
 // Create a random room if not already present in the URL.
 var isInitiator;
 var room = window.location.hash.substring(1);
-console.log("Room (hash):", room);
+
+if (room) {
+  console.log("Room (hash):", room);
+  document.title = `Express: ${room} [RECIEVER]`  
+}
 
 /****************************************************************************
  * Signaling server
@@ -145,7 +139,12 @@ socket.on("ipaddr", function (ipaddr) {
 socket.on("created", function (room, clientId) {
   console.log("Created room", room, "- my client ID is", clientId);
   isInitiator = true;
-  // grabWebCamVideo();
+
+  // setInterval(function() {
+  //   shareLocation();
+  // }, 20 * 1000); // every 20 seconds
+
+  grabWebCamVideo();
 });
 
 socket.on("joined", function (room, clientId) {
@@ -163,7 +162,10 @@ socket.on("full", function (room) {
 
 socket.on("ready", function () {
   console.log("Socket is ready");
-  createPeerConnection(isInitiator, configuration, 0);
+  
+  if (isInitiator) {
+    createPeerConnection(isInitiator, configuration, 0);
+  }
 });
 
 socket.on("log", function (array) {
@@ -172,7 +174,12 @@ socket.on("log", function (array) {
 
 socket.on("message", function (message) {
   console.log("Client received message:", message);
-  signalingMessageCallback(message);
+
+  if (message && message.type !== undefined) {
+    signalingMessageCallback(message);
+  } else {
+    console.warn("Unexpected message:", message)
+  }
 });
 
 // Joining a room.
@@ -237,7 +244,7 @@ function grabWebCamVideo() {
   console.log("Getting user media (video) ...");
   navigator.mediaDevices
     .getUserMedia({
-      audio: false,
+      audio: true,
       video: true,
     })
     .then(gotStream)
@@ -275,6 +282,7 @@ var photoChannel;
 
 var gpsChannel;
 
+// SDP: Session Description Protocol
 function signalingMessageCallback(message) {
   if (message.type === "offer") {
     console.log("Got offer. Sending answer to peer.");
@@ -284,6 +292,7 @@ function signalingMessageCallback(message) {
       logError,
     );
     peerConn.createAnswer(onLocalSessionCreated, logError);
+
   } else if (message.type === "answer") {
     console.log("Got answer.");
     peerConn.setRemoteDescription(
@@ -291,7 +300,9 @@ function signalingMessageCallback(message) {
       function () {},
       logError,
     );
+
   } else if (message.type === "candidate") {
+    console.log("Adding ICE candidate:", message);
     peerConn.addIceCandidate(
       new RTCIceCandidate({
         candidate: message.candidate,
@@ -327,13 +338,14 @@ function createPeerConnection(isInitiator, config) {
   };
 
   if (isInitiator) {
-    console.log("Creating data channel(s)...");
-    photoChannel = peerConn.createDataChannel("photos"); // TODO: Remove!
-    onPhotoDataChannelCreated();
-
-    // Create extra channel for GPS data
     gpsChannel = peerConn.createDataChannel("gps");
     onLocationDataChannelCreated();
+
+    // Add tracks from stream to peer connection
+    window.stream.getTracks().forEach(track => {
+      console.log("Adding track to stream:", track, stream)
+      peerConn.addTrack(track, window.stream)
+    });
 
     console.log("Creating an offer");
     peerConn
@@ -347,11 +359,6 @@ function createPeerConnection(isInitiator, config) {
       })
       .catch(logError);
 
-    // Add tracks from stream to peer connection
-    window.stream.getTracks().forEach(track => {
-      peerConn.addTrack(track, window.stream)
-    });
-
   } else {
     peerConn.ondatachannel = function (event) {
       console.log("ondatachannel:", event.channel);
@@ -364,13 +371,17 @@ function createPeerConnection(isInitiator, config) {
       }
     };
 
-    // Set the 'track' event callback
+    console.log("set the 'track' event callback")
     peerConn.ontrack = function (event) {
-      console.log("ontrack:", event.channel);
+      console.log("ontrack:", event);
       if (incomingVideo.srcObject !== event.streams[0]) {
         incomingVideo.srcObject = event.streams[0]
         console.log("recieved and set remote stream")
       }
+    }
+
+    peerConn.onnegotiationneeded = function (event) {
+      console.log("onnegotiationneeded:", event);
     }
   }
 
@@ -512,10 +523,20 @@ function receivePhotoDataFirefoxFactory() {
  ****************************************************************************/
 
 /** Open the video+audio+location stream from one user in the room to others */
-function createStream() {
-  shareLocation();
-  grabWebCamVideo()
-}
+  function createStream() {
+    // TODO: Move!
+    // setInterval(function() {
+    //   shareLocation();
+    // }, 20 * 1000); // every 20 seconds
+    
+    // grabWebCamVideo();
+
+    // Add tracks from stream to peer connection
+    window.stream.getTracks().forEach(track => {
+      console.log("Adding track to stream:", track, stream)
+      peerConn.addTrack(track, window.stream)
+    });
+  }
 
 // snapPhoto
 function shareLocation() {

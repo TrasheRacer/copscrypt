@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>Express</title>
+    <title>Express [INITIATOR]</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
 
@@ -14,15 +14,17 @@
         <canvas id="mapContent" width="800" height="800"></canvas>
       </div>
       <div>
-        <video id="camera" autoplay playsinline></video>
+        <video id="camera" autoplay playsinline muted="true"></video>
+
+        <!-- TODO: Hide if initiator! -->
+        <video id="incoming" autoplay playsinline controls></video>
+        
         <canvas id="photo"></canvas>
-        <!-- TODO: Disable stream button when somebody's already streaming -->
         <div id="buttons">
-          <!-- <button id="snap">Snap</button><span> then </span
-          ><button id="send">Send</button>
-          <span> or </span>
-          <button id="snapAndSend">Snap &amp; Send</button> -->
-          <button id="stream-btn">Stream</button>
+          <!-- TODO -->
+          <button>Stream location</button>
+          <!-- TODO: Disable stream button when somebody's already streaming -->
+          <button id="stream-btn">Stream video</button>
         </div>
         <br>
         <div id="navigate">
@@ -31,17 +33,6 @@
           <button onclick=" window.open('/DEPRECATE_THE_POLICE.pdf','_blank')"> PDF (English)</button>
           <button onclick=" window.open('https://github.com/TrasheRacer/copscrypt','_blank')"> GitHub</button>
         </div>
-      </div>
-    </div>
-    <div class="container">
-      <!-- <div class="incoming">
-        <h2>Outgoing photos:</h2>
-        <div id="trailUser"></div>
-      </div> -->
-      <div class="incoming">
-        <h2>Streamer</h2>
-        <video id="incoming" autoplay playsinline></video>
-        <div id="trailPeer"></div>
       </div>
     </div>
   </body>
