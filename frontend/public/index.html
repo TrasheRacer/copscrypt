@@ -1,51 +1,40 @@
 <html>
+  <script>
+    // Contain shared global state
+    window.copscrypt = {
+      windowTitle: "MVP"
+    }
+
+    // Test
+    document.title = window.copscrypt.windowTitle
+  </script>
+
   <head>
-    <title>Express [INITIATOR]</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
   </head>
 
   <body>
-    <!-- <h1>Express</h1>
-  <p>Welcome to Express</p> -->
-
-    <div class="dataContent">
-      <button onclick="resetView(); return false">Show meridian</button>
-      <div class="mapContainer">
-        <canvas id="mapContent" width="800" height="800"></canvas>
-      </div>
-      <div>
-        <video id="camera" autoplay playsinline muted="true"></video>
-
-        <!-- TODO: Hide if initiator! -->
-        <video id="incoming" autoplay playsinline controls></video>
-        
-        <canvas id="photo"></canvas>
-        <div id="buttons">
-          <!-- TODO -->
-          <button disabled>Stream location</button>
-          <!-- TODO: Disable stream button when somebody's already streaming -->
-          <button id="stream-btn" disabled>Stream video</button>
-        </div>
-        <br>
-        <div id="navigate">
-          <button onclick=" window.open('https://blue-book.pages.dev/de/','_blank')"> Info (Deutsch)</button>
-          <button onclick=" window.open('https://blue-book.pages.dev/en/','_blank')"> Info (English)</button>
-          <button onclick=" window.open('/DEPRECATE_THE_POLICE.pdf','_blank')"> PDF (English)</button>
-          <button onclick=" window.open('https://github.com/TrasheRacer/copscrypt','_blank')"> GitHub</button>
-        </div>
-      </div>
+    <div>
+      <span>TODO!</span>
     </div>
   </body>
 
-  <script>
-    // SHARED GLOBAL STATE
-    let incomingMessages = [];
-  </script>
+  <!-- PUBLIC DEPENDENCIES -->
 
-  <script src="//unpkg.com/d3@5/dist/d3.min.js"></script>
-  <script src="/javascripts/map.js"></script>
+  <!-- Used to display map -->
+  <!-- <script src="//unpkg.com/d3@5/dist/d3.min.js"></script> -->
 
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-  <script src="/javascripts/client.js"></script>
+  <!-- Used for WebRTC signalling -->
+  <!-- <script src="/socket.io/socket.io.js"></script> -->
+
+  <!-- Insulate from browser differences -->
+  <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+
+  <!-- PRIVATE DEPENDENCIES -->
+
+  <!-- Display location of streamer -->
+  <!-- <script src="/javascripts/map.js"></script> -->
+
+  <!-- Share audiovide and location -->
+  <!-- <script src="/javascripts/client.js"></script> -->
 </html>
