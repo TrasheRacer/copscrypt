@@ -1,12 +1,13 @@
 <html>
   <script>
-    // Contain shared global state
-    window.copscrypt = {
-      windowTitle: "MVP"
+    // contain shared global state
+    window.broadcastData = {
+      windowTitle: "MVP",
+      broadcastID: undefined
     }
 
-    // Test
-    document.title = window.copscrypt.windowTitle
+    // test global state container
+    document.title = window.broadcastData.windowTitle
   </script>
 
   <head>
@@ -14,27 +15,36 @@
   </head>
 
   <body>
-    <div>
-      <span>TODO!</span>
+    <div id="x">
+    </div>
+
+    <div id="y">
+      &#8595;
+    </div>
+
+    <div id="z">
     </div>
   </body>
 
   <!-- PUBLIC DEPENDENCIES -->
 
-  <!-- Used to display map -->
-  <!-- <script src="//unpkg.com/d3@5/dist/d3.min.js"></script> -->
+  <!-- used to display map -->
+  <!-- <script src="http://unpkg.com/d3@5/dist/d3.min.js"></script> -->
 
-  <!-- Used for WebRTC signalling -->
-  <!-- <script src="/socket.io/socket.io.js"></script> -->
+  <!-- used for WebRTC signalling -->
+  <!-- <script src="http://socket.io/socket.io.js"></script> -->
 
-  <!-- Insulate from browser differences -->
+  <!-- insulate from browser differences -->
   <!-- <script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
 
   <!-- PRIVATE DEPENDENCIES -->
 
-  <!-- Display location of streamer -->
+  <!-- display location of streamer -->
   <!-- <script src="/javascripts/map.js"></script> -->
 
-  <!-- Share audiovide and location -->
-  <!-- <script src="/javascripts/client.js"></script> -->
+  <!-- share audiovide and location -->
+  <script src="/javascripts/client.js"></script>
+
+  <!-- functions for user interaction -->
+  <script src="/javascripts/ui.js"></script>
 </html>

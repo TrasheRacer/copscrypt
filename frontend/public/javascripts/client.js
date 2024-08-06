@@ -1,11 +1,7 @@
 "use strict";
 
-// FIXME?
-import adapter from 'webrtc-adapter';
-
-/****************************************************************************
- * Initial setup
- ****************************************************************************/
+// FIXME
+// import adapter from 'webrtc-adapter';
 
 // var configuration = {
 //   'iceServers': [{
