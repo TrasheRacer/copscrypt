@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!-- <title>Socket.IO chat</title> -->
+    <link rel="stylesheet" type="text/css" href="styles.css" />
+</head>
+
+<body>
+    <div class="container">
+        <div>
+            <button id="create-btn">CREATE</button>
+            <button id="join-btn">JOIN</button>
+        </div>
+
+        <!-- TODO: Show when JOIN is clicked! -->
+        <div id="connect-form" hidden>
+            <input type="text" name="stream-id" id="connect-input" placeholder="ENTER STREAM ID">
+            <button id="connect-btn">CONNECT</button>
+        </div>
+    </div>
+
+    <script src="connect.js"></script>
+</body>
+
+</html>
