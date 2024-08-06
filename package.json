@@ -3,5 +3,9 @@
     "version": "0.0.1",
     "description": "Free Open Source Sousveillance",
     "type": "module",
+    "engines": {
+        "node": ">=20",
+        "pnpm": ">=3"
+    },
     "dependencies": {}
 }
