@@ -7,5 +7,7 @@
         "node": ">=20",
         "pnpm": ">=3"
     },
-    "dependencies": {}
+    "dependencies": {
+        "express": "^4.19.2"
+    }
 }
