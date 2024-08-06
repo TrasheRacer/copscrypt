@@ -8,31 +8,42 @@
 </head>
 
 <body>
+    <div class="separator">
+        <h4><span id="client-type">RECIEVER</span>: <span id="client-id"></span></h4>
+    </div>
     <div class="container">
-        <h2>TO IMPLEMENT</h2>
-        <ul>
-            <li>If CREATE and identified stream doesn't exist,
-                then start streaming
-            </li>
-            <li>Else if CREATE and identified stream <strong>does</strong> already exist,
-                then fail
-            </li>
-            <li>Else if JOIN and identified stream <strong>does</strong> already exist,
-                then join stream
-            </li>
-            <li>Else if JOIN and identified stream <strong>doesn't</strong> exist,
-                then fail
-            </li>
-        </ul>
+        <video></video>
+    </div>
+    <div class="separator">
+        <h2>&#8595; TELEMETRY &#8595;</h2>
+    </div>
+    <div class="container">
+        <table id="telemetry">
+            <thead>
+                <tr>
+                    <th scope="col">TIME</th>
+                    <th scope="col">DATA</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="signals.js"></script>
+    <script src="tm.js"></script>
     <script>
         const socket = io();
+        const clientOut = document.getElementById("client-id")
+        const tmTable = document.getElementById("telemetry")
+        const tmBody = tmTable.getElementsByTagName('tbody')[0]
+
         const hash = window.location.hash.substring(1);
-        
         if (!hash) {
+            const clientType = document.getElementById("client-type")
+            clientType.textContent = "STREAMER"
+
             const newId = Math.floor((1 + Math.random()) * 1e16)
                 .toString(16).substring(1);
             window.location.hash = newId
@@ -42,6 +53,20 @@
             console.debug(`joining stream ${hash}`)
             joinStream(socket, hash)
         }
+
+        socket.on("stream_created", (clientId) => {
+            console.debug(`client ${clientId} has created a new stream`)
+            clientOut.textContent = clientId
+        })
+
+        socket.on("stream_joined", (clientId) => {
+            console.debug(`client ${clientId} has joined an existing stream`)
+            if (!hash) {
+                appendClient(tmBody, clientId)
+            } else {
+                clientOut.textContent = clientId
+            }
+        })
     </script>
 </body>
 

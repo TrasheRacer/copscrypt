@@ -11,6 +11,7 @@ function createSignalling(io, socket) {
             socket.join(streamId)
             log(`client ${socket.id} successfully created stream ${streamId}`);
             debug(`stream ${streamId} clients`, io.sockets.adapter.rooms.get(streamId))
+            socket.emit("stream_created", socket.id)
         } else {
             warn(`client ${socket.id} can't create existing stream ${streamId}`);
             debug(`stream ${streamId} already has ${clientCount} clients`);
@@ -21,10 +22,12 @@ function createSignalling(io, socket) {
         log(`client ${socket.id} trying to join stream ${streamId}`);
         const stream = io.sockets.adapter.rooms.get(streamId);
         debug(`stream ${streamId} clients`, stream)
-        const clientCount = stream.size
+        const clientCount = (stream ?? new Set()).size
         if (clientCount > 0) {
             socket.join(streamId)
             log(`client ${socket.id} successfully joined stream ${streamId}`);
+            socket.broadcast.emit("stream_joined", socket.id)
+            socket.emit("stream_joined", socket.id) // also send to self
         } else {
             warn(`client ${socket.id} can't join nonexistent stream ${streamId}`);
         }

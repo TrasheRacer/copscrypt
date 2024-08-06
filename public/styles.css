@@ -1,6 +1,6 @@
 div.container {
     /* size for mobile */
-    min-height: 95vh;
+    min-height: 80vh;
 
     /* easier development */
     border-style: dotted;
@@ -13,4 +13,8 @@ div.container {
     flex-direction: column;
     align-items: center;
     justify-content: space-around;
+}
+
+div.separator {
+    text-align: center;
 }
