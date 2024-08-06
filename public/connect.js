@@ -1,3 +1,5 @@
+"use strict";
+
 // controls
 const createBtn = document.getElementById("create-btn");
 const joinBtn = document.getElementById("join-btn");

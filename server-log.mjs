@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * log to console with timestamp
  * @param {string} output should be lowercase

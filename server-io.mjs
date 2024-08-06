@@ -1,3 +1,5 @@
+"use strict";
+
 import { log, warn, debug } from './server-log.mjs'
 
 function createSignalling(io, socket) {
@@ -31,6 +33,22 @@ function createSignalling(io, socket) {
         } else {
             warn(`client ${socket.id} can't join nonexistent stream ${streamId}`);
         }
+    })
+
+    socket.on("share_candidate", (candidate) => {
+        // debug(`sharing candidate`, candidate)
+        debug(`sharing candidate...`)
+        socket.broadcast.emit("share_candidate", candidate)
+    })
+
+    socket.on("share_offer", (offer) => {
+        debug(`sharing offer`, offer)
+        socket.broadcast.emit("share_offer", offer)
+    })
+
+    socket.on("share_answer", (answer) => {
+        debug(`sharing answer`, answer)
+        socket.broadcast.emit("share_answer", answer)
     })
 }
 

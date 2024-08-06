@@ -1,3 +1,5 @@
+"use strict";
+
 function appendRow(tBody, data) {
     // insert a row at the end of table
     var newRow = tBody.insertRow();

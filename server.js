@@ -1,3 +1,5 @@
+"use strict";
+
 // public
 import express from 'express';
 import { readFileSync } from 'fs'

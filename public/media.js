@@ -1,4 +1,6 @@
-async function streamVideo(video) {
+"use strict";
+
+async function captureVideo(video) {
     try {
         const stream = await navigator.mediaDevices
             .getUserMedia({
@@ -6,6 +8,7 @@ async function streamVideo(video) {
                 video: true
             })
         video.srcObject = stream
+        return stream
     } catch (error) {
         alert(`NO USER MEDIA AVAILABLE!`)
     }

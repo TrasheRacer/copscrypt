@@ -42,7 +42,12 @@
         const tmBody = tmTable.getElementsByTagName('tbody')[0]
         const videoOut = document.querySelector("video")
 
+        var stream
+
+        var pc // RTCPeerConnection
+
         const hash = window.location.hash.substring(1);
+
         if (!hash) {
             const clientType = document.getElementById("client-type")
             clientType.textContent = "STREAMER"
@@ -57,19 +62,46 @@
             joinStream(socket, hash)
         }
 
-        socket.on("stream_created", (clientId) => {
+        socket.on("stream_created", async (clientId) => {
             console.debug(`client ${clientId} has created a new stream`)
             clientOut.textContent = clientId
-            streamVideo(videoOut)
+            stream = await captureVideo(videoOut)
         })
 
-        socket.on("stream_joined", (clientId) => {
+        socket.on("stream_joined", async (clientId) => {
             console.debug(`client ${clientId} has joined an existing stream`)
             if (!hash) {
                 appendClient(tmBody, clientId)
+                pc = await makeOutgoing(socket, stream)
             } else {
                 clientOut.textContent = clientId
+                pc = await makeIncoming(socket, videoOut)
             }
+        })
+
+        socket.on("share_candidate", (event) => {
+            // console.debug("adding shared candidate", event)
+            console.debug("adding shared candidate...")
+            pc.addIceCandidate(
+                new RTCIceCandidate({
+                    candidate: event.candidate,
+                    sdpMLineIndex: event.label,
+                    sdpMid: event.id,
+                })
+            )
+        })
+
+        socket.on("share_offer", async (event) => {
+            console.debug("got offer", event)
+            pc.setRemoteDescription(new RTCSessionDescription(event))
+            const answer = pc.createAnswer()
+            await pc.setLocalDescription(answer)
+            socket.emit("share_answer", pc.localDescription)
+        })
+
+        socket.on("share_answer", (event) => {
+            console.debug("got answer", event)
+            pc.setRemoteDescription(new RTCSessionDescription(event))
         })
     </script>
 </body>
