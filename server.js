@@ -8,6 +8,7 @@ import { Server } from 'socket.io';
 
 // private
 import { log } from './server-log.mjs'
+import { createSignalling } from './server-io.mjs'
 
 // initialise
 const app = express();
@@ -31,9 +32,12 @@ app.get('/stream', (req, res) => {
 });
 
 // event predefined by library
-io.on('connection', (socket) => {
-    log('a user connected');
-  });
+io.on('connection', (socket) => createSignalling(io, socket));
+
+// metrics
+setInterval(() => {
+    log(`connected sockets to stream id`, io.sockets.adapter.sids)
+}, 10000) // every ten seconds
 
 // ready
 server.listen(3000, () => {

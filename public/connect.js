@@ -1,5 +1,4 @@
 // controls
-
 const createBtn = document.getElementById("create-btn");
 const joinBtn = document.getElementById("join-btn");
 const connectForm = document.getElementById("connect-form");
@@ -10,10 +9,8 @@ const connectBtn = document.getElementById("connect-btn");
 connectIn.value = ""
 
 // handlers
-
 createBtn.addEventListener("click", () => {
-    const newId = Math.floor((1 + Math.random()) * 1e16).toString(16).substring(1);
-    window.location.href = `/stream#${newId}`
+    window.location.href = `/stream`
 })
 joinBtn.addEventListener("click", () => {
     connectForm.hidden = false
