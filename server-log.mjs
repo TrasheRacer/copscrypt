@@ -15,18 +15,26 @@ function log(output, arg) {
  * log to console with timestamp
  * @param {string} output should be lowercase
  */
-function warn(output) {
+function warn(output, arg) {
     const now = new Date();
-    console.warn(`${now.toLocaleString("en-GB")} ${output}`)
+    if (arg) {
+        console.warn(`${now.toLocaleString("en-GB")} ${output}:`, arg)
+    } else {
+        console.warn(`${now.toLocaleString("en-GB")} ${output}`)
+    }
 }
 
 /**
  * log to console with timestamp
  * @param {string} output should be lowercase
  */
-function debug(output) {
+function debug(output, arg) {
     const now = new Date();
-    console.debug(`${now.toLocaleString("en-GB")} ${output}`)
+    if (arg) {
+        console.debug(`${now.toLocaleString("en-GB")} ${output}:`, arg)
+    } else {
+        console.debug(`${now.toLocaleString("en-GB")} ${output}`)
+    }
 }
 
 export { log, warn, debug }

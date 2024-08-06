@@ -23,11 +23,11 @@ const io = new Server(server);
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.use(express.static('public'))
 app.get('/', (req, res) => {
-    log('requested index')
+    // log('requested index')
     res.sendFile(join(__dirname, 'index.html'));
 });
 app.get('/stream', (req, res) => {
-    log('requested stream')
+    // log('requested stream')
     res.sendFile(join(__dirname, 'index-stream.html'));
 });
 
@@ -35,9 +35,9 @@ app.get('/stream', (req, res) => {
 io.on('connection', (socket) => createSignalling(io, socket));
 
 // metrics
-setInterval(() => {
-    log(`connected sockets to stream id`, io.sockets.adapter.sids)
-}, 10000) // every ten seconds
+// setInterval(() => {
+//     log(`connected sockets to stream id`, io.sockets.adapter.sids)
+// }, 10000) // every ten seconds
 
 // ready
 server.listen(3000, () => {

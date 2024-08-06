@@ -27,17 +27,20 @@
     </div>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script src="signalling.js"></script>
+    <script src="signals.js"></script>
     <script>
         const socket = io();
-        const room = window.location.hash.substring(1);
+        const hash = window.location.hash.substring(1);
         
-        if (!room) {
+        if (!hash) {
             const newId = Math.floor((1 + Math.random()) * 1e16)
                 .toString(16).substring(1);
             window.location.hash = newId
             console.debug(`creating new stream ${newId}`)
             createStream(socket, newId)
+        } else {
+            console.debug(`joining stream ${hash}`)
+            joinStream(socket, hash)
         }
     </script>
 </body>
