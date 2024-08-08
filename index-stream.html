@@ -10,6 +10,9 @@
 <body>
     <div class="separator">
         <h4><span id="client-type">RECIEVER</span>: <span id="client-id"></span></h4>
+
+        <!-- TODO: Display hash! -->
+        <h5>STREAM ID: SEE URL HASH</h5>
     </div>
     <div class="container">
         <video autoplay playsinline muted="true"></video>
@@ -56,7 +59,7 @@
                 .toString(16).substring(1);
 
             // hash after credentials parameter
-            window.location = `${window.location}#${newId}`
+            window.location.hash = newId
 
             console.debug(`creating new stream ${newId}`)
             createStream(socket, newId)

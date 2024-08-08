@@ -27,7 +27,7 @@ connectBtn.addEventListener("click", () => {
     const id = connectIn.value
     const creds = credentialIn.value
     if (id.length > 0 && creds.length > 0) {
-        window.location.href = `/stream#${id}?credentials=${creds}`
+        window.location.href = `/stream?credentials=${creds}#${id}`
     } else {
         alert("INVALID!")
     }
