@@ -7,6 +7,10 @@
         "node": ">=20",
         "pnpm": ">=3"
     },
+    "scripts": {
+        "test": "echo \"UNTESTED!\" && exit 1",
+        "start": "node server.js"
+    },
     "dependencies": {
         "express": "^4.19.2",
         "socket.io": "^4.7.5"

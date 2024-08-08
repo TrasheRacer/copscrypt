@@ -2,8 +2,9 @@
 
 // public
 import express from 'express';
-import { readFileSync } from 'fs'
-import { createServer } from 'node:https';
+// import { readFileSync } from 'fs'
+// import { createServer } from 'node:https';
+import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
@@ -14,11 +15,12 @@ import { createSignalling } from './server-io.mjs'
 
 // initialise
 const app = express();
-const credentials = {
-    key: readFileSync("ssl/key.pem"),
-    cert: readFileSync("ssl/cert.pem")
-}
-const server = createServer(credentials, app);
+// const credentials = {
+//     key: readFileSync("ssl/key.pem"),
+//     cert: readFileSync("ssl/cert.pem")
+// }
+// const server = createServer(credentials, app);
+const server = createServer(app);
 const io = new Server(server);
 
 // routes
@@ -41,7 +43,8 @@ io.on('connection', (socket) => createSignalling(io, socket));
 //     log(`connected sockets to stream id`, io.sockets.adapter.sids)
 // }, 10000) // every ten seconds
 
-// ready
-server.listen(3000, () => {
+// note that 'process' is available without import
+const port = process.env.PORT || 3000
+server.listen(port, () => {
     log('listening');
 });
