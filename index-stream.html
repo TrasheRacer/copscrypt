@@ -54,7 +54,11 @@
 
             const newId = Math.floor((1 + Math.random()) * 1e16)
                 .toString(16).substring(1);
-            window.location.hash = newId
+
+            // window.location.hash = newId // FIXME: Move *after* credentials param!
+
+            window.location.hash = `${window.location}#${newId}`
+
             console.debug(`creating new stream ${newId}`)
             createStream(socket, newId)
         } else {
