@@ -7,6 +7,7 @@
 // };
 
 function getConfigFromCredentials(credential) {
+    console.debug(`ice credential:`, credential)
     return {
         iceServers: [
             {
