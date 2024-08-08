@@ -70,12 +70,16 @@
 
         socket.on("stream_joined", async (clientId) => {
             console.debug(`client ${clientId} has joined an existing stream`)
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const credParam = urlParams.get('credentials');
+
             if (!hash) {
                 appendClient(tmBody, clientId)
-                pc = await makeOutgoing(socket, stream)
+                pc = await makeOutgoing(socket, stream, credParam)
             } else {
                 clientOut.textContent = clientId
-                pc = await makeIncoming(socket, videoOut)
+                pc = await makeIncoming(socket, videoOut, credParam)
             }
         })
 

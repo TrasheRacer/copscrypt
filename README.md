@@ -12,6 +12,7 @@ Example server IP address: `192.168.178.103`
 2. Install with `pnpm`
 3. Run with `node server.js`
 4. Go to `https://192.168.178.103:3000/` for correct host and import certificate
+5. Provide the correct STUN/TURN server credentials before creating or joining a stream
 
 ### Styleguide
 

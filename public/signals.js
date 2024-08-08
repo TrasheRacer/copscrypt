@@ -5,7 +5,36 @@
 //     'urls': 'stun:stun.l.google.com:19302'
 //   }]
 // };
-const iceConfig = {} // FIXME!
+
+function getConfigFromCredentials(credential) {
+    return {
+        iceServers: [
+            {
+              urls: "stun:stun.relay.metered.ca:80",
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80",
+              username: "7125b08d402cb996a92c3e37",
+              credential,
+            },
+            {
+              urls: "turn:global.relay.metered.ca:80?transport=tcp",
+              username: "7125b08d402cb996a92c3e37",
+              credential,
+            },
+            {
+              urls: "turn:global.relay.metered.ca:443",
+              username: "7125b08d402cb996a92c3e37",
+              credential,
+            },
+            {
+              urls: "turns:global.relay.metered.ca:443?transport=tcp",
+              username: "7125b08d402cb996a92c3e37",
+              credential,
+            },
+        ],
+      }
+}
 
 function createStream(socket, streamId) {
     socket.emit("create_stream", streamId)
@@ -15,8 +44,9 @@ function joinStream(socket, streamId) {
     socket.emit("join_stream", streamId)
 }
 
-async function makeOutgoing(socket, stream) {
-    const peerConnection = new RTCPeerConnection(iceConfig)
+async function makeOutgoing(socket, stream, credential) {
+    // const peerConnection = new RTCPeerConnection(iceConfig)
+    const peerConnection = new RTCPeerConnection(getConfigFromCredentials(credential))
     peerConnection.onicecandidate = (event) => {
         console.debug(`onIceCandidate:`, event)
         if (event.candidate) {
@@ -48,8 +78,9 @@ async function makeOutgoing(socket, stream) {
     return peerConnection
 }
 
-async function makeIncoming(socket, video) {
-    const peerConnection = new RTCPeerConnection(iceConfig)
+async function makeIncoming(socket, video, credential) {
+    // const peerConnection = new RTCPeerConnection(iceConfig)
+    const peerConnection = new RTCPeerConnection(getConfigFromCredentials(credential))
     peerConnection.onicecandidate = (event) => {
         console.debug(`on candidate:`, event)
         if (event.candidate) {
