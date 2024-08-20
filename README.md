@@ -2,7 +2,7 @@
 
 Free Open Source Sousveillance
 
-> Even when only X% of snakes are deadly, you still carry antivenom
+> In a jungle where only X% of snakes are deadly you should still carry the antidote
 
 ### Quickstart
 
