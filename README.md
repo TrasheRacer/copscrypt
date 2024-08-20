@@ -18,3 +18,5 @@ Example server IP address: `192.168.178.103`
 
 - Lowercase docs (including comments) everywhere but Markdown
 - See https://www.gov.uk/service-manual/service-standard
+- Compare https://www.aclu.org/issues/criminal-law-reform/reforming-police/mobile-justice
+  
